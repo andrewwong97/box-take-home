@@ -13,8 +13,8 @@ def play_game():
 
     end_game = False
     while not end_game:
-        command = raw_input()
-        game.execute(command)
+        move = raw_input()
+        game.execute(move)
 
 
 if __name__ == '__main__':
