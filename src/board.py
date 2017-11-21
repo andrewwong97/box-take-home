@@ -1,9 +1,12 @@
 from utils import stringifyBoard
-from my_exceptions import PositionException
+from my_exceptions import PositionException, MoveException
 
 
 class Board:
     board = []
+    pieces = ['k', 'g', 's', 'b', 'r']
+    lower_captured = []
+    UPPER_captured = []
 
     def __init__(self, mode='i'):
         """
@@ -15,12 +18,58 @@ class Board:
             self.set_default_positions()
 
     def set_default_positions(self):
-        pieces = ['k', 'g', 's', 'b', 'r']
-        for i in xrange(0, len(pieces)):
-            self.board[i][0] = pieces[i].lower()
-            self.board[i][4] = pieces[len(pieces)-i-1].upper()
+        for i in xrange(0, len(self.pieces)):
+            self.board[i][0] = self.pieces[i].lower()
+            self.board[i][4] = self.pieces[len(self.pieces)-i-1].upper()
         self.board[0][1] = 'p'
         self.board[4][3] = 'P'
+
+    def handle_move(self, origin, dest):
+        """
+        Move a board piece (win conditions and validity checked inside Game caller)
+        :param origin: origin square
+        :param dest: destination square
+        :return: 1 if success, 0 if failure
+        """
+        # TODO: actually move the piece
+        pass
+
+    def piece_at_square(self, square):
+        """
+        Check if there is a piece at given square
+        :param square: board square
+        :return: piece value if found, else return None
+        """
+        r, c = Board.sq_to_position(square)
+        for p in self.pieces:
+            if self.board[r][c] == p.lower():
+                return p.lower()
+            elif self.board[r][c] == p.upper():
+                return p.upper()
+        return None
+
+    @staticmethod
+    def is_in_bounds(self, origin, dest):
+        """
+        Check if origin, destination are in bounds
+        :param origin: origin square
+        :param dest: destination square
+        :return: True if in bounds, False otherwise
+        """
+        try:
+            o = Board.sq_to_position(origin)
+            d = Board.sq_to_position(dest)
+            return Board.bounds_helper(o) and Board.bounds_helper(d)
+        except PositionException:
+            return False
+
+    @staticmethod
+    def bounds_helper(pos):
+        """ Check if a position tuple is in board bounds """
+        try:
+            return 5 > pos[0] >= 0 and 5 > pos[1] >= 0
+        except IndexError:
+            return False
 
     @staticmethod
     def sq_to_position(square):
