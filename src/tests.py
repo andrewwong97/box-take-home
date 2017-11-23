@@ -1,6 +1,6 @@
 import unittest
 from board import Board
-from pieces import King
+from pieces import *
 
 
 # A suite of sanity checks
@@ -13,13 +13,23 @@ class TestThings(unittest.TestCase):
         self.assertEqual(Board.sq_to_position('b1'), (1, 0))
         self.assertEqual(Board.sq_to_position('e5'), (4, 4))
 
+    def test_piece_owner(self):
+        k = King('k', (2, 2))
+        self.assertEqual(k.owner, 'lower')
+
     def test_get_moves_king(self):
         k = King('k', (2, 2))
         self.assertEqual(len(k.get_moves()), 8)
 
-    def test_piece_owner(self):
-        k = King('k', (2, 2))
-        self.assertEqual(k.owner, 'lower')
+    def test_get_moves_goldgen(self):
+        gg = GoldGeneral('g', (0, 0))
+        self.assertEqual(len(gg.get_moves()), 6)
+
+    def test_empty_board(self):
+        b = Board(mode='')
+        for i in b.board:
+            for j in i:
+                assert j == ''
 
 
 if __name__ == '__main__':

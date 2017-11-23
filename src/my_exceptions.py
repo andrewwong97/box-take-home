@@ -12,3 +12,7 @@ class MoveException(Exception):
 class TurnException(Exception):
     def __init__(self, message):
         super(TurnException, self).__init__(message)
+
+class PromoteException(Exception):
+    def __init__(self, message):
+        super(TurnException, self).__init__(message)

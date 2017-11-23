@@ -1,6 +1,10 @@
 from utils import stringifyBoard
 from my_exceptions import PositionException, MoveException
 
+UPPER_Y = 4
+UPPER_X = 4
+LOWER_Y = 0
+LOWER_X = 0
 
 class Board:
     board = []
@@ -67,7 +71,7 @@ class Board:
     def bounds_helper(pos):
         """ Check if a position tuple is in board bounds """
         try:
-            return 5 > pos[0] >= 0 and 5 > pos[1] >= 0
+            return UPPER_X >= pos[0] >= LOWER_X and UPPER_Y >= pos[1] >= LOWER_Y
         except IndexError:
             return False
 
