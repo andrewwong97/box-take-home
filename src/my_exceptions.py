@@ -13,6 +13,7 @@ class TurnException(Exception):
     def __init__(self, message):
         super(TurnException, self).__init__(message)
 
-class PromoteException(Exception):
+
+class PieceException(Exception):
     def __init__(self, message):
         super(TurnException, self).__init__(message)
