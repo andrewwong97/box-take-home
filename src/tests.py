@@ -1,10 +1,11 @@
 import unittest
 from board import Board
 from pieces import King, GoldGeneral
+from my_exceptions import TurnException
 
 
 # A suite of sanity checks
-class TestThings(unittest.TestCase):
+class TestSanity(unittest.TestCase):
     def setUp(self):
         self.board = Board()
 
@@ -33,6 +34,15 @@ class TestThings(unittest.TestCase):
         for i in b.board:
             for j in i:
                 assert j == ''
+
+    def test_stalemate(self):
+        from game import Game
+        g = Game('i')
+        g.num_turns = 400
+        try:
+            g.execute('move a1 a2')
+        except TurnException as e:
+            self.assertEqual(e.message, 'stalemate')
 
 
 if __name__ == '__main__':

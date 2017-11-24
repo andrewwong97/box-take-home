@@ -1,5 +1,6 @@
 import argparse
 from game import Game
+from my_exceptions import MoveException, TurnException
 
 
 def test_game(fp):
@@ -19,7 +20,14 @@ def play_game():
     while not end_game:
         move = raw_input(game.turn + '>')
         print '{} player action: {}'.format(game.turn, move)
-        game.execute(move)
+        try:
+            code = game.execute(move)
+        except (MoveException, TurnException) as e:
+            if e.message == "stalemate":
+                print 'Tie game. Too many moves.'
+            else:
+                print '{} player wins. Illegal move.'.format(game.other_player())
+            return
         print game.board
         print ''
         print 'Captures UPPER: {}'.format(game.board.UPPER_captured)

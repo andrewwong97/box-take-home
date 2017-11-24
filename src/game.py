@@ -17,11 +17,11 @@ class Game:
         """
         Execute a move or drop command
         :param move: command string given by a file or shell
-        :return: -1 if stalemate, 1 if success, 0 if failure
+        :return: 1 if success, 0 if failure
         :raises: MoveException if invalid
         """
         if self.num_turns >= 400:
-            return -1
+            raise TurnException("stalemate")
 
         line = move.strip().split()
         if line[0].lower() == 'move':
