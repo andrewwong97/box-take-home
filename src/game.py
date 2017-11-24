@@ -6,12 +6,12 @@ class Game:
     turn = 'lower'
     num_turns = 0
 
-    def __init__(self, mode):
+    def __init__(self, mode, fp=None):
         """
         Initialize a Game state
         :param mode: i for interactive or f for file mode
         """
-        self.board = Board(mode)
+        self.board = Board(mode, fp)
 
     def execute(self, move):
         """

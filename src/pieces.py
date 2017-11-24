@@ -15,21 +15,25 @@ class PieceFactory:
         :param coords: 2-tuple of piece position on board
         :return: new Piece object
         """
+        promote, piece_type = piece_type[0], piece_type[-1]
         p = piece_type.lower()
         if p == 'p':
-            return Pawn(piece_type, coords)
+            piece = Pawn(piece_type, coords)
         elif p == 'b':
-            return Bishop(piece_type, coords)
+            piece = Bishop(piece_type, coords)
         elif p == 'r':
-            return Rook(piece_type, coords)
+            piece = Rook(piece_type, coords)
         elif p == 's':
-            return SilverGeneral(piece_type, coords)
+            piece = SilverGeneral(piece_type, coords)
         elif p == 'g':
-            return GoldGeneral(piece_type, coords)
+            piece = GoldGeneral(piece_type, coords)
         elif p == 'k':
-            return King(piece_type, coords)
+            piece = King(piece_type, coords)
         else:
             raise PieceException("{} invalid piece type".format(piece_type))
+        if promote == '+':
+            piece.promote()
+        return piece
 
 
 class Piece:

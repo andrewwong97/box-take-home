@@ -10,7 +10,15 @@ def in_bounds(pos):
         return False
 
 
+from pieces import Piece
+
+
 def _stringifySquare(sq):
+
+    if type(sq) is not str:
+        if issubclass(sq, Piece):
+            sq = str(sq)
+
     if type(sq) is not str or len(sq) > 2:
         raise ValueError('Board must be an array of strings like "", "P", or "+P"')
 
@@ -37,6 +45,7 @@ def stringifyBoard(board):
     s += '    a  b  c  d  e' + os.linesep
 
     return s
+
 
 def parseTestCase(path):
     f = open(path)

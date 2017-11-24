@@ -4,29 +4,32 @@ from my_exceptions import MoveException, TurnException
 
 
 def test_game(fp):
-    print fp
-    return 0
+    game = Game('f', fp)
+    moves = game.board.file_moves
+    for move in moves:
+        play_turn(game, move)
 
 
 def play_game():
-    game = Game('i')
-
+    game, end_game = Game('i'), False
     print game
-
-    end_game = False
     while not end_game:
         move = raw_input(game.turn + '>')
-        print '{} player action: {}'.format(game.turn, move)
-        try:
-            code = game.execute(move)
-        except (MoveException, TurnException) as e:
-            if e.message == "stalemate":
-                print 'Tie game. Too many moves.'
-            else:
-                print '{} player wins. Illegal move.'.format(game.other_player())
-                print 'DEBUG: {}'.format(e.message)
-            return
-        print game
+        play_turn(game, move)
+
+
+def play_turn(game, move):
+    print '{} player action: {}'.format(game.turn, move)
+    try:
+        code = game.execute(move)
+    except (MoveException, TurnException) as e:
+        if e.message == "stalemate":
+            print 'Tie game. Too many moves.'
+        else:
+            print '{} player wins. Illegal move.'.format(game.other_player())
+            print 'DEBUG: {}'.format(e.message)
+        return
+    print game
 
 
 if __name__ == '__main__':

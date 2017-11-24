@@ -1,4 +1,4 @@
-from utils import stringifyBoard, in_bounds
+from utils import stringifyBoard, in_bounds, parseTestCase
 from pieces import PieceFactory, Piece
 from my_exceptions import PositionException
 
@@ -13,15 +13,18 @@ class Board:
     pieces = ['k', 'g', 's', 'b', 'r']
     lower_captured = []
     UPPER_captured = []
+    file_moves = []
 
-    def __init__(self, mode='i'):
+    def __init__(self, mode='i', fp=''):
         """
         Init Board object
         :param mode: i for interactive, f for file mode
         """
-        self.board = [['', '', '', '', ''] for i in range(5)]
+        self.board = [['', '', '', '', ''] for _ in range(5)]
         if mode == 'i':
             self.set_default_positions()
+        elif mode == 'f':
+            self.set_file_positions(fp)
 
     def set_default_positions(self):
         for i in xrange(0, UPPER_Y+1):
@@ -29,6 +32,16 @@ class Board:
             self.board[i][4] = PieceFactory.create_piece(self.pieces[UPPER_Y-i].upper(), (i, 4))
         self.board[0][1] = PieceFactory.create_piece('p', (0, 1))
         self.board[4][3] = PieceFactory.create_piece('P', (4, 3))
+
+    def set_file_positions(self, fp):
+        test_case = parseTestCase(fp)
+        for p in test_case['initialPieces']:
+            x, y = Board.sq_to_position(p['position'])
+            piece_type = p['piece']
+            self.board[x][y] = PieceFactory.create_piece(piece_type, (x, y))
+        self.lower_captured = test_case['lowerCaptures']
+        self.UPPER_captured = test_case['upperCaptures']
+        self.file_moves = test_case['moves']
 
     def move(self, origin, dest):
         """
