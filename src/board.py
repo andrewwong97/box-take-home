@@ -1,10 +1,12 @@
-from utils import stringifyBoard
-from my_exceptions import PositionException, MoveException
+from utils import stringifyBoard, in_bounds
+from pieces import PieceFactory, Piece
+from my_exceptions import PositionException
 
 UPPER_Y = 4
 UPPER_X = 4
 LOWER_Y = 0
 LOWER_X = 0
+
 
 class Board:
     board = []
@@ -22,21 +24,50 @@ class Board:
             self.set_default_positions()
 
     def set_default_positions(self):
-        for i in xrange(0, len(self.pieces)):
-            self.board[i][0] = self.pieces[i].lower()
-            self.board[i][4] = self.pieces[len(self.pieces)-i-1].upper()
-        self.board[0][1] = 'p'
-        self.board[4][3] = 'P'
+        for i in xrange(0, UPPER_Y+1):
+            self.board[i][0] = PieceFactory.create_piece(self.pieces[i].lower(), (i, 0))
+            self.board[i][4] = PieceFactory.create_piece(self.pieces[UPPER_Y-i].upper(), (i, 4))
+        self.board[0][1] = PieceFactory.create_piece('p', (0, 1))
+        self.board[4][3] = PieceFactory.create_piece('P', (4, 3))
 
-    def handle_move(self, origin, dest):
+    def move(self, origin, dest):
         """
         Move a board piece (win conditions and validity checked inside Game caller)
         :param origin: origin square
         :param dest: destination square
         :return: 1 if success, 0 if failure
         """
-        # TODO: actually move the piece
-        pass
+        try:
+            o = self.sq_to_position(origin)
+            d = self.sq_to_position(dest)
+            self.board[d[0]][d[1]] = self.board[o[0]][o[1]]
+            self.board[o[0]][o[1]] = ''
+            return 1
+        except:
+            return 0
+
+    def capture(self, origin, dest):
+        """
+        Perform board operations for a capture event, assuming correct inputs.
+        First capture, then move.
+        :param origin: origin square
+        :param dest: destination square
+        :return: 1 if success, 0 if failure
+        """
+        try:
+            # capture
+            d = self.sq_to_position(dest)
+            if isinstance(self.board[d[0]][d[1]], Piece):
+                captured_piece = self.piece_at_square(dest)
+                if captured_piece.islower():
+                    self.UPPER_captured.append(captured_piece)
+                else:
+                    self.lower_captured.append(captured_piece)
+            # move
+            self.move(origin, dest)
+            return 1
+        except:
+            return 0
 
     def piece_at_square(self, square):
         """
@@ -45,15 +76,13 @@ class Board:
         :return: piece value if found, else return None
         """
         r, c = Board.sq_to_position(square)
-        for p in self.pieces:
-            if self.board[r][c] == p.lower():
-                return p.lower()
-            elif self.board[r][c] == p.upper():
-                return p.upper()
-        return None
+        if isinstance(self.board[r][c], Piece):
+            return self.board[r][c].piece_type[-1]
+        else:
+            return None
 
     @staticmethod
-    def is_in_bounds(self, origin, dest):
+    def is_in_bounds(origin, dest):
         """
         Check if origin, destination are in bounds
         :param origin: origin square
@@ -63,16 +92,8 @@ class Board:
         try:
             o = Board.sq_to_position(origin)
             d = Board.sq_to_position(dest)
-            return Board.bounds_helper(o) and Board.bounds_helper(d)
+            return in_bounds(o) and in_bounds(d)
         except PositionException:
-            return False
-
-    @staticmethod
-    def bounds_helper(pos):
-        """ Check if a position tuple is in board bounds """
-        try:
-            return UPPER_X >= pos[0] >= LOWER_X and UPPER_Y >= pos[1] >= LOWER_Y
-        except IndexError:
             return False
 
     @staticmethod
@@ -106,4 +127,6 @@ class Board:
     def __str__(self):
         """ Board string representation """
         return stringifyBoard(self.board)
+
+
 

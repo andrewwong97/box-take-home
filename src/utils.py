@@ -1,7 +1,16 @@
 import os
 
-def _stringifySquare(sq):
 
+# defined here because used in both pieces.py and board.py
+def in_bounds(pos):
+    """ Check if a position tuple is in board bounds """
+    try:
+        return 4 >= pos[0] >= 0 and 4 >= pos[1] >= 0
+    except IndexError:
+        return False
+
+
+def _stringifySquare(sq):
     if type(sq) is not str or len(sq) > 2:
         raise ValueError('Board must be an array of strings like "", "P", or "+P"')
 
@@ -21,7 +30,7 @@ def stringifyBoard(board):
         
         s += '' + str(row + 1) + ' |'
         for col in range(0, len(board[row])):
-            s += _stringifySquare(board[col][row])
+            s += _stringifySquare(str(board[col][row]))
 
         s += os.linesep
 

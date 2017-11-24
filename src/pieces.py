@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from my_exceptions import PieceException
-from board import Board, UPPER_Y, UPPER_X, LOWER_Y, LOWER_X
+from utils import in_bounds
 
 
 class PieceFactory:
@@ -8,7 +8,13 @@ class PieceFactory:
         pass
 
     @staticmethod
-    def create_piece(self, piece_type, coords):
+    def create_piece(piece_type, coords):
+        """
+        Create and return a Piece object
+        :param piece_type: one of [p, b, r, s, g, k] piece types (case sensitive)
+        :param coords: 2-tuple of piece position on board
+        :return: new Piece object
+        """
         p = piece_type.lower()
         if p == 'p':
             return Pawn(piece_type, coords)
@@ -16,9 +22,9 @@ class PieceFactory:
             return Bishop(piece_type, coords)
         elif p == 'r':
             return Rook(piece_type, coords)
-        elif p == 'sg':
+        elif p == 's':
             return SilverGeneral(piece_type, coords)
-        elif p == 'gg':
+        elif p == 'g':
             return GoldGeneral(piece_type, coords)
         elif p == 'k':
             return King(piece_type, coords)
@@ -26,7 +32,9 @@ class PieceFactory:
             raise PieceException("{} invalid piece type".format(piece_type))
 
 
-class Piece(metaclass=ABCMeta):
+class Piece:
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, piece_type, coords):
         """
@@ -58,8 +66,11 @@ class Piece(metaclass=ABCMeta):
         self._moveset = self._unpromote
         self.piece_type = self.piece_type[-1]
 
+    def __str__(self):
+        return self.piece_type
 
-class King(object, Piece):
+
+class King(Piece):
     def __init__(self, piece_type, coords):
         super(King, self).__init__(piece_type, coords)
         self._moveset, self._unpromote = king_moves(self.x, self.y), king_moves(self.x, self.y)
@@ -164,9 +175,9 @@ def bishop_moves(x, y):
 def rook_moves(x, y):
     result = []
     # get all possible vertical and horizontal moves
-    for i in range(LOWER_X, UPPER_X+1):
+    for i in range(0, 5):
         result.append((i, y))
-    for j in range(LOWER_Y, UPPER_Y+1):
+    for j in range(0, 5):
         result.append((x, j))
     # remove out of bounds moves
     result.remove((x, y))
@@ -180,6 +191,8 @@ def pawn_moves(x, y):
 def remove_out_of_bounds(moves_list):
     """ Remove out of bounds 2-tuple coordinates from a moves list """
     for coord in moves_list:
-        if not Board.bounds_helper(coord):
+        if not in_bounds(coord):
             moves_list.remove(coord)
     return moves_list
+
+

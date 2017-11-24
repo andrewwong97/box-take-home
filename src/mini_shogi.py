@@ -1,5 +1,4 @@
 import argparse
-from board import Board
 from game import Game
 
 
@@ -11,10 +10,20 @@ def test_game(fp):
 def play_game():
     game = Game('i')
 
+    print game.board
+    print 'Captures UPPER: {}'.format(game.board.UPPER_captured)
+    print 'Captures lower: {}'.format(game.board.lower_captured)
+    print ''
+
     end_game = False
     while not end_game:
-        move = raw_input()
+        move = raw_input(game.turn + '>')
+        print '{} player action: {}'.format(game.turn, move)
         game.execute(move)
+        print game.board
+        print ''
+        print 'Captures UPPER: {}'.format(game.board.UPPER_captured)
+        print 'Captures lower: {}'.format(game.board.lower_captured)
 
 
 if __name__ == '__main__':

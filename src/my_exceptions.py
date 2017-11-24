@@ -16,4 +16,4 @@ class TurnException(Exception):
 
 class PieceException(Exception):
     def __init__(self, message):
-        super(TurnException, self).__init__(message)
+        super(PieceException, self).__init__(message)

@@ -17,17 +17,17 @@ class Game:
         """
         Execute a move or drop command
         :param move: command string given by a file or shell
-        :return: 2 if stalemate, 1 if success, 0 if failure
+        :return: -1 if stalemate, 1 if success, 0 if failure
         :raises: MoveException if invalid
         """
         if self.num_turns >= 400:
-            return 2
+            return -1
 
         line = move.strip().split()
         if line[0].lower() == 'move':
             if len(line) == 3:
                 origin, dest = line[1:]
-                return self.handle_move(origin, dest)
+                self.handle_move(origin, dest)
             # elif len(line) == 4 and line[3].lower() == 'promote':
             #     origin, dest = line[1:3]
             #     if self.handle_move(origin, dest):
@@ -44,7 +44,6 @@ class Game:
         #         raise MoveException('Command {} is not a valid move'.format(move))
         self.next_turn()
 
-
     def handle_move(self, origin, dest):
         """
         Move a board piece, if there exists a piece and the move is valid.
@@ -59,22 +58,20 @@ class Game:
         # if exists wrong turn piece at origin: TurnException
         pass
         if Board.is_in_bounds(origin, dest):
-            o_piece = Board.piece_at_square(origin)
-            d_piece = Board.piece_at_square(dest)
+            o_piece = self.board.piece_at_square(origin)
+            d_piece = self.board.piece_at_square(dest)
             if o_piece:
                 if not same_casing(o_piece, self.turn):
                     raise TurnException("{} attempted to move other player's piece".format(self.turn))
                 if not d_piece:
                     # simple move
-                    Board.move(origin, dest)
-                    #TODO
+                    self.board.move(origin, dest)
                 elif same_casing(o_piece, d_piece):
                     # exists player owned piece at destination
                     raise MoveException("{} and {} are both owned by the same player".format(origin, dest))
-                if not same_casing(o_piece, d_piece):
+                elif not same_casing(o_piece, d_piece):
                     # exists opposite pieces, capture event
-                    Board.capture(origin, dest)
-                    #TODO
+                    self.board.capture(origin, dest)
             else:
                 # there is no piece at origin
                 raise MoveException("no piece at {} to move".format(origin))
@@ -82,11 +79,14 @@ class Game:
             raise MoveException('{} or {} out of bounds'.format(origin, dest))
 
     def next_turn(self):
-        if self.turn == 'lower':
-            self.turn = 'UPPER'
-        else:
-            self.turn = 'lower'
+        self.turn = self.other_player()
         self.num_turns += 1
+
+    def other_player(self):
+        if self.turn == 'lower':
+            return 'UPPER'
+        else:
+            return 'lower'
 
 
 def same_casing(s1, s2):
