@@ -24,6 +24,7 @@ def play_game():
                 print 'Tie game. Too many moves.'
             else:
                 print '{} player wins. Illegal move.'.format(game.other_player())
+                print 'DEBUG: {}'.format(e.message)
             return
         print game
 

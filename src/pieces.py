@@ -67,7 +67,7 @@ class Piece:
         self.piece_type = self.piece_type[-1]
 
     def __str__(self):
-        return self.piece_type
+        return self.piece_type[-1]
 
 
 class King(Piece):
@@ -164,9 +164,9 @@ def silver_gen_moves(x, y):
 
 def bishop_moves(x, y):
     result = []
-    for i in range(-2, 3):
-        for j in range(-2, 3):
-            if i == j:
+    for i in range(-4, 5):
+        for j in range(-4, 5):
+            if i == j or i == -1*j:
                 result.append((x + i, y + j))
     result.remove((x, y))
     return remove_out_of_bounds(result)
@@ -193,6 +193,6 @@ def remove_out_of_bounds(moves_list):
     for coord in moves_list:
         if not in_bounds(coord):
             moves_list.remove(coord)
-    return moves_list
+    return list(set(moves_list))
 
 

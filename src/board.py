@@ -63,6 +63,7 @@ class Board:
                     self.UPPER_captured.append(captured_piece)
                 else:
                     self.lower_captured.append(captured_piece)
+                self.board[d[0]][d[1]] = ''  # reset space
             # move
             self.move(origin, dest)
             return 1
@@ -73,11 +74,11 @@ class Board:
         """
         Check if there is a piece at given square
         :param square: board square
-        :return: piece value if found, else return None
+        :return: Piece object value if found, else return None
         """
         r, c = Board.sq_to_position(square)
         if isinstance(self.board[r][c], Piece):
-            return self.board[r][c].piece_type[-1]
+            return self.board[r][c]
         else:
             return None
 
@@ -116,6 +117,20 @@ class Board:
             if square[0].lower() == letters[i]:
                 return i, y-1
         raise PositionException('Invalid square: {}'.format(square))
+
+    @staticmethod
+    def position_to_square(pos):
+        """
+        Convert a position tuple to square
+        :param pos (x,y) int tuple
+        :return: a string (e.g. a1) representing the square
+        :raises PositionException if invalid square
+        """
+        letters = ['a', 'b', 'c', 'd', 'e']
+        for j in range(len(letters)):
+            if pos[0] == j:
+                return letters[j] + str(pos[1]+1)
+        raise PositionException('Invalid position: {}'.format(pos))
 
     def __repr__(self):
         """ Used for debugging """

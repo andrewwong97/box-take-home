@@ -64,14 +64,19 @@ class Game:
                 if not same_casing(o_piece, self.turn):
                     raise TurnException("{} attempted to move other player's piece".format(self.turn))
                 if not d_piece:
-                    # simple move
-                    self.board.move(origin, dest)
-                elif same_casing(o_piece, d_piece):
+                    # simple move, _moveset check
+                    if Board.sq_to_position(dest) in o_piece.get_moves:
+                        return self.board.move(origin, dest)
+                    else:
+                        # print [Board.position_to_square(i) for i in o_piece.get_moves]
+                        print 'DEBUG: {}'.format(o_piece.get_moves)
+                        raise MoveException("not in moveset: {}, position {}".format(dest, Board.sq_to_position(dest)))
+                if same_casing(o_piece, d_piece):
                     # exists player owned piece at destination
                     raise MoveException("{} and {} are both owned by the same player".format(origin, dest))
-                elif not same_casing(o_piece, d_piece):
+                if not same_casing(o_piece, d_piece):
                     # exists opposite pieces, capture event
-                    self.board.capture(origin, dest)
+                    return self.board.capture(origin, dest)
             else:
                 # there is no piece at origin
                 raise MoveException("no piece at {} to move".format(origin))
@@ -96,5 +101,13 @@ class Game:
         s += 'Captures lower: {}\n'.format(self.board.lower_captured)
         return s
 
+
 def same_casing(s1, s2):
+    """
+    Check if two object string representation are the same casing
+    :param s1: first object
+    :param s2: second object
+    :return: True if same casing, False if not same casing
+    """
+    s1, s2 = str(s1), str(s2)
     return (s1.islower() and s2.islower()) or (s1.isupper() and s2.isupper())

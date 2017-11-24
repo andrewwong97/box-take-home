@@ -3,7 +3,7 @@ import os
 
 # defined here because used in both pieces.py and board.py
 def in_bounds(pos):
-    """ Check if a position tuple is in board bounds """
+    """ Check if a position 2-tuple is in board bounds """
     try:
         return 4 >= pos[0] >= 0 and 4 >= pos[1] >= 0
     except IndexError:
