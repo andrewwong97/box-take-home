@@ -88,6 +88,13 @@ class Game:
         else:
             return 'lower'
 
+    def __str__(self):
+        """ stringify Game state """
+        s = str(self.board)
+        s += '\n'
+        s += 'Captures UPPER: {}\n'.format(self.board.UPPER_captured)
+        s += 'Captures lower: {}\n'.format(self.board.lower_captured)
+        return s
 
 def same_casing(s1, s2):
     return (s1.islower() and s2.islower()) or (s1.isupper() and s2.isupper())

@@ -11,10 +11,7 @@ def test_game(fp):
 def play_game():
     game = Game('i')
 
-    print game.board
-    print 'Captures UPPER: {}'.format(game.board.UPPER_captured)
-    print 'Captures lower: {}'.format(game.board.lower_captured)
-    print ''
+    print game
 
     end_game = False
     while not end_game:
@@ -28,10 +25,7 @@ def play_game():
             else:
                 print '{} player wins. Illegal move.'.format(game.other_player())
             return
-        print game.board
-        print ''
-        print 'Captures UPPER: {}'.format(game.board.UPPER_captured)
-        print 'Captures lower: {}'.format(game.board.lower_captured)
+        print game
 
 
 if __name__ == '__main__':

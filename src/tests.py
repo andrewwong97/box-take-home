@@ -1,6 +1,6 @@
 import unittest
 from board import Board
-from pieces import King, GoldGeneral
+from pieces import *
 from my_exceptions import TurnException
 
 
@@ -26,8 +26,13 @@ class TestSanity(unittest.TestCase):
         self.assertEqual(len(k._moveset), 8)
 
     def test_get_moves_goldgen(self):
-        gg = GoldGeneral('g', (0, 0))
-        self.assertEqual(len(gg._moveset), 4)
+        g = GoldGeneral('g', (0, 0))
+        self.assertEqual(len(g._moveset), 4)
+
+    def test_pawn_move_two_spaces(self):
+        from game import Game
+        g = Game('i')
+        g.execute('move a2 a4')
 
     def test_empty_board(self):
         b = Board(mode='')
