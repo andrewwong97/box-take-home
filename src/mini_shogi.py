@@ -15,7 +15,10 @@ def play_game():
     print game
     while not end_game:
         move = raw_input(game.turn + '>')
-        play_turn(game, move)
+        try:
+            play_turn(game, move)
+        except (MoveException, TurnException):
+            return
 
 
 def play_turn(game, move):
@@ -30,7 +33,8 @@ def play_turn(game, move):
         else:
             print '{} player wins.  Illegal move.'.format(game.other_player())
             # print 'DEBUG: {}'.format(e.message)
-        return
+        raise e
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

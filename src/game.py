@@ -54,8 +54,6 @@ class Game:
         :raises: MoveException if piece does not exist or the move is invalid
                  TurnException if move out of turn or move invalid piece
         """
-        # TODO:
-        # if exists wrong turn piece at origin: TurnException
         pass
         if Board.is_in_bounds(origin, dest):
             o_piece = self.board.piece_at_square(origin)
@@ -76,7 +74,9 @@ class Game:
                     raise MoveException("{} and {} are both owned by the same player".format(origin, dest))
                 if not same_casing(o_piece, d_piece):
                     # exists opposite pieces, capture event
-                    return self.board.capture(origin, dest)
+                    if Board.sq_to_position(dest) in o_piece.get_moves:
+                        return self.board.capture(origin, dest)
+
             else:
                 # there is no piece at origin
                 raise MoveException("no piece at {} to move".format(origin))

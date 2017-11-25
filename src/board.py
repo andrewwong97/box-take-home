@@ -65,21 +65,25 @@ class Board:
         First capture, then move.
         :param origin: origin square
         :param dest: destination square
-        :return: 1 if success, 0 if failure
+        :return: 1 if success, 0 if failuree
         """
         try:
             # capture
-            d = self.sq_to_position(dest)
-            if isinstance(self.board[d[0]][d[1]], Piece):
-                captured_piece = self.piece_at_square(dest)
-                if captured_piece.islower():
-                    self.UPPER_captured.append(captured_piece)
-                else:
-                    self.lower_captured.append(captured_piece)
-                self.board[d[0]][d[1]] = ''  # reset space
-            # move
-            self.move(origin, dest)
-            return 1
+            x, y = self.sq_to_position(dest)
+            if type(self.board[x][y]) is not str:
+                if isinstance(self.board[x][y], Piece):
+                    captured_piece = str(self.piece_at_square(dest))
+                    if captured_piece.islower():
+                        self.UPPER_captured.append(captured_piece)
+                    else:
+                        self.lower_captured.append(captured_piece)
+
+                    self.board[x][y] = ''  # reset space
+                # move
+                self.move(origin, dest)
+                return 1
+            else:
+                return 0
         except:
             return 0
 
