@@ -21,16 +21,16 @@ def play_game():
 def play_turn(game, move):
     print '{} player action: {}'.format(game.turn, move)
     try:
-        code = game.execute(move)
+        game.execute(move)
+        print game
     except (MoveException, TurnException) as e:
+        print game
         if e.message == "stalemate":
-            print 'Tie game. Too many moves.'
+            print 'Tie game.  Too many moves.'
         else:
-            print '{} player wins. Illegal move.'.format(game.other_player())
-            print 'DEBUG: {}'.format(e.message)
+            print '{} player wins.  Illegal move.'.format(game.other_player())
+            # print 'DEBUG: {}'.format(e.message)
         return
-    print game
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

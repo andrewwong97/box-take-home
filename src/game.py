@@ -69,7 +69,7 @@ class Game:
                         return self.board.move(origin, dest)
                     else:
                         # print [Board.position_to_square(i) for i in o_piece.get_moves]
-                        print 'DEBUG: {}'.format(o_piece.get_moves)
+                        # print 'DEBUG: {}'.format(o_piece.get_moves)
                         raise MoveException("not in moveset: {}, position {}".format(dest, Board.sq_to_position(dest)))
                 if same_casing(o_piece, d_piece):
                     # exists player owned piece at destination
@@ -97,8 +97,8 @@ class Game:
         """ stringify Game state """
         s = str(self.board)
         s += '\n'
-        s += 'Captures UPPER: {}\n'.format(self.board.UPPER_captured)
-        s += 'Captures lower: {}\n'.format(self.board.lower_captured)
+        s += 'Captures UPPER: {}\n'.format(' '.join(self.board.UPPER_captured))
+        s += 'Captures lower: {}\n'.format(' '.join(self.board.lower_captured))
         return s
 
 
