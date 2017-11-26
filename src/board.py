@@ -1,6 +1,6 @@
 from utils import stringifyBoard, in_bounds, parseTestCase
 from pieces import PieceFactory, Piece
-from my_exceptions import PositionException
+from my_exceptions import PositionException, PieceException
 
 UPPER_Y = 4
 UPPER_X = 4
@@ -97,9 +97,23 @@ class Board:
         x, y = Board.sq_to_position(square)
         p = self.board[x][y]
         if isinstance(p, Piece):
-            p.promote()
-            return 1
+            try:
+                p.promote()
+                return 1
+            except PieceException:
+                return 0
         return 0
+
+    def drop(self, piece_type, dest):
+        """
+        Drop a piece at square
+        :param piece_type: piece type, case sensitive
+        :param dest: destination square
+        :return: 1 if success, 0 if failure
+        """
+        x, y = Board.sq_to_position(dest)
+        self.board[x][y] = PieceFactory.create_piece(piece_type, (x, y))
+        return 1 if self.board[x][y] else 0
 
     def piece_at_square(self, square):
         """
@@ -173,6 +187,3 @@ class Board:
     def __str__(self):
         """ Board string representation """
         return stringifyBoard(self.board)
-
-
-

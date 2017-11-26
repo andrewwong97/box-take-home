@@ -95,5 +95,21 @@ class TestOtherGameMoves(unittest.TestCase):
         self.g.execute('move a4 a5 promote')
         self.assertEqual(self.g.board.piece_at_square('a5').piece_type, '+p')
 
+    def test_basic_lower_pawn_drop(self):
+        self.g.board.lower_captured = ['p']
+        self.g.execute('drop p a1')
+        self.assertEqual(self.g.board.piece_at_square('a1').piece_type, 'p')
+        self.assertEqual(len(self.g.board.lower_captured), 0)
+
+    def test_occupied_lower_pawn_drop(self):
+        x, y = Board.sq_to_position('a1')
+        self.board_arr[x][y] = PieceFactory.create_piece('B', (x, y))
+
+        self.g.board.lower_captured = ['p']
+        self.assertEqual(self.g.execute('drop p a1'), 0)
+        self.assertEqual(self.g.board.piece_at_square('a1').piece_type, 'B')
+
+
+
 if __name__ == '__main__':
     unittest.main()

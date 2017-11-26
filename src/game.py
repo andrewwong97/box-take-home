@@ -33,17 +33,30 @@ class Game:
                 if self.handle_move(origin, dest):
                     # promote piece if move successful
                     if self.end_zone(dest):
-                        self.board.promote_piece_at(dest)
-                    pass
+                        return self.board.promote_piece_at(dest)
                 else:
                     return 0
             else:
-                raise MoveException('Command {} is not a valid move'.format(move))
-        # elif line[0].lower() == 'drop':
-        #     if len(line) == 3:
-        #         piece, dest = line[1:]
-        #     else:
-        #         raise MoveException('Command {} is not a valid move'.format(move))
+                raise MoveException('Invalid move: {}'.format(move))
+        elif line[0].lower() == 'drop':
+            if len(line) == 3:
+                piece_type, dest = line[1:]
+                if len(piece_type.strip()) != 1:
+                    raise MoveException('Invalid drop, piece must be a single value: {}'.format(piece_type))
+                if self.turn == 'lower':
+                    if piece_type in self.board.lower_captured and not self.board.piece_at_square(dest):
+                        self.board.lower_captured.remove(piece_type)
+                        return self.board.drop(piece_type, dest)
+                    return 0
+                elif self.turn == 'UPPER':
+                    if piece_type.upper() in self.board.UPPER_captured and not self.board.piece_at_square(dest):
+                        self.board.UPPER_captured.remove(piece_type.upper())
+                        return self.board.drop(piece_type.upper(), dest)
+                    return 0
+                else:
+                    return 0
+            else:
+                raise MoveException('Invalid drop: {}'.format(move))
         self.next_turn()
 
     def handle_move(self, origin, dest):
