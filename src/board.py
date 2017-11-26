@@ -65,7 +65,7 @@ class Board:
         First capture, then move.
         :param origin: origin square
         :param dest: destination square
-        :return: 1 if success, 0 if failuree
+        :return: 1 if success, 0 if failure
         """
         try:
             # capture
@@ -74,9 +74,9 @@ class Board:
                 if isinstance(self.board[x][y], Piece):
                     captured_piece = str(self.piece_at_square(dest))
                     if captured_piece.islower():
-                        self.UPPER_captured.append(captured_piece)
+                        self.UPPER_captured.append(captured_piece[-1].upper())
                     else:
-                        self.lower_captured.append(captured_piece)
+                        self.lower_captured.append(captured_piece[-1].lower())
 
                     self.board[x][y] = ''  # reset space
                 # move
@@ -87,15 +87,29 @@ class Board:
         except:
             return 0
 
+    def promote_piece_at(self, square):
+        """
+        Promote piece at a square
+        :param square: square
+        :return: 1 if success, 0 if not success
+        :raises PieceException
+        """
+        x, y = Board.sq_to_position(square)
+        p = self.board[x][y]
+        if isinstance(p, Piece):
+            p.promote()
+            return 1
+        return 0
+
     def piece_at_square(self, square):
         """
         Check if there is a piece at given square
         :param square: board square
         :return: Piece object value if found, else return None
         """
-        r, c = Board.sq_to_position(square)
-        if isinstance(self.board[r][c], Piece):
-            return self.board[r][c]
+        x, y = Board.sq_to_position(square)
+        if isinstance(self.board[x][y], Piece):
+            return self.board[x][y]
         else:
             return None
 

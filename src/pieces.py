@@ -98,6 +98,7 @@ class SilverGeneral(Piece):
         self._moveset, self._unpromote = silver_gen_moves(self.x, self.y), silver_gen_moves(self.x, self.y)
 
     def promote(self):
+        """ Moves like a gold general """
         self._moveset = gold_gen_moves(self.x, self.y)
         self.piece_type = '+{}'.format(self.piece_type)
 
@@ -107,9 +108,9 @@ class Bishop(Piece):
         super(Bishop, self).__init__(piece_type, coords)
         self._moveset, self._unpromote = bishop_moves(self.x, self.y), bishop_moves(self.x, self.y)
 
-    def promote(self, to_king=False):
-        if to_king:
-            self._moveset = king_moves(self.x, self.y)
+    def promote(self):
+        """ Moves like a bishop or king """
+        self._moveset = list(set(king_moves(self.x, self.y) + bishop_moves(self.x, self.y)))
         self.piece_type = '+{}'.format(self.piece_type)
 
 
@@ -118,9 +119,9 @@ class Rook(Piece):
         super(Rook, self).__init__(piece_type, coords)
         self._moveset, self._unpromote = rook_moves(self.x, self.y), rook_moves(self.x, self.y)
 
-    def promote(self, to_king=False):
-        if to_king:
-            self._moveset = king_moves(self.x, self.y)
+    def promote(self):
+        """ Moves like a rook or king """
+        self._moveset = list(set(king_moves(self.x, self.y) + rook_moves(self.x, self.y)))
         self.piece_type = '+{}'.format(self.piece_type)
 
 
@@ -130,6 +131,7 @@ class Pawn(Piece):
         self._moveset, self._unpromote = pawn_moves(self.x, self.y), pawn_moves(self.x, self.y)
 
     def promote(self):
+        """ Moves like a gold general """
         self._moveset = gold_gen_moves(self.x, self.y)
         self.piece_type = '+{}'.format(self.piece_type)
 

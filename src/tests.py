@@ -45,7 +45,7 @@ class TestSanity(unittest.TestCase):
     def test_remove_out_of_bounds(self):
         self.assertEqual(remove_out_of_bounds([(-1, 6), (4, 1), (0, 2)]), [(4, 1), (0, 2)])
 
-    def test_pos_in_bounds(self):
+    def test_pos_not_in_bounds(self):
         self.assertFalse(in_bounds((-1, 4)))
 
     def test_same_casing_empty_space(self):
@@ -53,7 +53,7 @@ class TestSanity(unittest.TestCase):
         self.assertFalse(same_casing('a1', '_'))
 
 
-class TestGameMoves(unittest.TestCase):
+class TestInteractiveGameMoves(unittest.TestCase):
     def setUp(self):
         self.g = Game('i')
 
@@ -71,6 +71,29 @@ class TestGameMoves(unittest.TestCase):
         except TurnException as e:
             self.assertEqual(e.message, 'stalemate')
 
+    def test_lower_capture(self):
+        self.g.execute('move e1 e4')
+        self.assertEqual(self.g.board.lower_captured, ['p'])
+
+    def test_end_zone(self):
+        self.assertTrue(self.g.end_zone('a5'))
+        self.assertFalse(self.g.end_zone('a0'))
+        self.g.execute('move a1 b2')
+        self.assertFalse(self.g.end_zone('a5'))
+        self.assertTrue(self.g.end_zone('a0'))
+
+
+class TestOtherGameMoves(unittest.TestCase):
+    def setUp(self):
+        self.g = Game('g')  # not interactive or file
+        self.board_arr = self.g.board.board  # manually set board pieces
+
+    def test_lower_pawn_promote(self):
+        x, y = Board.sq_to_position('a4')
+        self.board_arr[x][y] = PieceFactory.create_piece('p', (x, y))
+        self.assertEqual(str(self.board_arr[x][y]), 'p')
+        self.g.execute('move a4 a5 promote')
+        self.assertEqual(self.g.board.piece_at_square('a5').piece_type, '+p')
 
 if __name__ == '__main__':
     unittest.main()

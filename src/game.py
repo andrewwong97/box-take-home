@@ -28,13 +28,15 @@ class Game:
             if len(line) == 3:
                 origin, dest = line[1:]
                 self.handle_move(origin, dest)
-            # elif len(line) == 4 and line[3].lower() == 'promote':
-            #     origin, dest = line[1:3]
-            #     if self.handle_move(origin, dest):
-            #         # TODO: promote piece if move successful
-            #         pass
-            #     else:
-            #         return 0
+            elif len(line) == 4 and line[3].lower() == 'promote':
+                origin, dest = line[1:3]
+                if self.handle_move(origin, dest):
+                    # promote piece if move successful
+                    if self.end_zone(dest):
+                        self.board.promote_piece_at(dest)
+                    pass
+                else:
+                    return 0
             else:
                 raise MoveException('Command {} is not a valid move'.format(move))
         # elif line[0].lower() == 'drop':
@@ -93,8 +95,21 @@ class Game:
         else:
             return 'lower'
 
+    def end_zone(self, dest):
+        """ Is destination is in end zone for current turn? """
+        if self.turn == 'lower':
+            try:
+                return int(dest[-1]) == 5
+            except ValueError:
+                return False
+        else:
+            try:
+                return int(dest[-1]) == 0
+            except ValueError:
+                return False
+
     def __str__(self):
-        """ stringify Game state """
+        """ stringify Game board and capture state """
         s = str(self.board)
         s += '\n'
         s += 'Captures UPPER: {}\n'.format(' '.join(self.board.UPPER_captured))
