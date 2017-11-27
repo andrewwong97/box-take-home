@@ -1,4 +1,5 @@
 from board import Board
+from pieces import Piece
 from my_exceptions import MoveException, TurnException
 
 
@@ -101,7 +102,15 @@ class Game:
     def is_valid_move(self, origin, dest):
         """ Helper function for valid move checks, no jumps """
         o_piece = self.board.piece_at_square(origin)
-        return Board.sq_to_position(dest) in o_piece.get_moves
+        if Board.sq_to_position(dest) in o_piece.get_moves:
+            for pos in self.get_path_positions(origin, dest):
+                if self.board.piece_at_square(Board.position_to_square(pos)):
+                    # there is a piece between origin and destination
+                    return False
+            # no piece between origin and destination
+            return True
+        # destination is not a valid move
+        return False
 
     def get_path_positions(self, origin, dest):
         """
@@ -117,12 +126,12 @@ class Game:
         if Board.is_bishop_path(o_pos, d_pos):
             for pos in o_piece.get_moves:
                 if pos != o_pos and pos != d_pos and Board.is_bishop_path(o_pos, pos):
-                    if pos[0] < d_pos[0]:
+                    if Board.in_between(pos, o_pos, d_pos):
                         result.append(pos)
         if Board.is_rook_path(o_pos, d_pos):
             for pos in o_piece.get_moves:
                 if pos != o_pos and pos != d_pos and Board.is_rook_path(o_pos, pos):
-                    if pos[0] <= d_pos[0] and pos[1] <= d_pos[1]:
+                    if Board.in_between(pos, o_pos, d_pos):
                         result.append(pos)
         return result
 

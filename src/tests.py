@@ -82,6 +82,11 @@ class TestInteractiveGameMoves(unittest.TestCase):
         self.assertFalse(self.g.end_zone('a5'))
         self.assertTrue(self.g.end_zone('a0'))
 
+    def test_invalid_jump(self):
+        self.g.execute('move a1 b2')
+        self.g.execute('move b5 e2')
+        self.assertRaises(MoveException, self.g.execute, 'move e1 e3')
+
 
 class TestOtherGameMoves(unittest.TestCase):
     def setUp(self):

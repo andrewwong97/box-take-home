@@ -179,14 +179,30 @@ class Board:
 
     @staticmethod
     def is_bishop_path(o, d):
+        """ Is the path from position o to position d a bishop path? """
         return d[1] - o[1] == d[0] - o[0]
 
     @staticmethod
     def is_rook_path(o, d):
-        return d[1] - o[1] == 0 or d[0] - o[0] == 0
+        """ Is the path from position o to position d a rook path? """
+        return d[1] == o[1] or d[0] == o[0]
+
+    @staticmethod
+    def rook_in_between(pos, o_pos, d_pos):
+        """ Is position pos in between a rook path from o_pos to d_pos? """
+        if d_pos[1] > pos[1] > o_pos[1] or d_pos[1] < pos[1] < o_pos[1] and d_pos[0] == pos[0] == o_pos[0]:
+            return True
+        elif d_pos[0] > pos[0] > o_pos[0] or d_pos[0] < pos[0] < o_pos[0] and d_pos[1] == pos[1] == o_pos[1]:
+            return True
+        return False
+
+    @staticmethod
+    def in_between(pos, o_pos, d_pos):
+        """ Helper: is position pos in between a path from o_pos to d_pos? """
+        return (d_pos[1] > pos[1] > o_pos[1] or d_pos[1] < pos[1] < o_pos[1]) or \
+               (d_pos[0] > pos[0] > o_pos[0] or d_pos[0] < pos[0] < o_pos[0])
 
     def __repr__(self):
-        """ Used for debugging """
         s = ''
         for row in range(len(self.board)):
             s += '{}\n'.format([i for i in self.board[row]])
