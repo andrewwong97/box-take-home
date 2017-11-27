@@ -78,7 +78,7 @@ class Game:
                     raise TurnException("{} attempted to move other player's piece".format(self.turn))
                 if not d_piece:
                     # simple move, _moveset check
-                    if Board.sq_to_position(dest) in o_piece.get_moves:
+                    if self.is_valid_move(origin, dest):
                         return self.board.move(origin, dest)
                     else:
                         # print [Board.position_to_square(i) for i in o_piece.get_moves]
@@ -89,7 +89,7 @@ class Game:
                     raise MoveException("{} and {} are both owned by the same player".format(origin, dest))
                 if not same_casing(o_piece, d_piece):
                     # exists opposite pieces, capture event
-                    if Board.sq_to_position(dest) in o_piece.get_moves:
+                    if self.is_valid_move(origin, dest):
                         return self.board.capture(origin, dest)
 
             else:
@@ -97,6 +97,34 @@ class Game:
                 raise MoveException("no piece at {} to move".format(origin))
         else:
             raise MoveException('{} or {} out of bounds'.format(origin, dest))
+
+    def is_valid_move(self, origin, dest):
+        """ Helper function for valid move checks, no jumps """
+        o_piece = self.board.piece_at_square(origin)
+        return Board.sq_to_position(dest) in o_piece.get_moves
+
+    def get_path_positions(self, origin, dest):
+        """
+        Get intermediate positions between origin and destination
+        :param origin: origin square (e.g. a1)
+        :param dest: destination square (e.g. b2)
+        :return: list of position 2-tuples
+        """
+        result = []
+        o_piece = self.board.piece_at_square(origin)
+        o_pos = Board.sq_to_position(origin)
+        d_pos = Board.sq_to_position(dest)
+        if Board.is_bishop_path(o_pos, d_pos):
+            for pos in o_piece.get_moves:
+                if pos != o_pos and pos != d_pos and Board.is_bishop_path(o_pos, pos):
+                    if pos[0] < d_pos[0]:
+                        result.append(pos)
+        if Board.is_rook_path(o_pos, d_pos):
+            for pos in o_piece.get_moves:
+                if pos != o_pos and pos != d_pos and Board.is_rook_path(o_pos, pos):
+                    if pos[0] <= d_pos[0] and pos[1] <= d_pos[1]:
+                        result.append(pos)
+        return result
 
     def next_turn(self):
         self.turn = self.other_player()

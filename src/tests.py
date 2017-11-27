@@ -109,6 +109,28 @@ class TestOtherGameMoves(unittest.TestCase):
         self.assertEqual(self.g.execute('drop p a1'), 0)
         self.assertEqual(self.g.board.piece_at_square('a1').piece_type, 'B')
 
+    def test_is_bishop_path(self):
+        x, y = Board.sq_to_position('a1')
+        self.board_arr[x][y] = PieceFactory.create_piece('b', (x, y))
+
+        a1 = Board.sq_to_position('a1')
+        d4 = Board.sq_to_position('d4')
+        self.assertTrue(Board.is_bishop_path(a1, d4))
+
+    def test_get_path_positions_bishop(self):
+        x, y = Board.sq_to_position('a1')
+        self.board_arr[x][y] = PieceFactory.create_piece('b', (x, y))
+
+        b2 = Board.sq_to_position('b2')
+        c3 = Board.sq_to_position('c3')
+        self.assertEqual(self.g.get_path_positions('a1', 'd4'), [b2, c3])
+
+    def test_get_path_positions_rook(self):
+        x, y = Board.sq_to_position('a1')
+        self.board_arr[x][y] = PieceFactory.create_piece('r', (x, y))
+        self.assertEqual(self.g.get_path_positions('a1', 'a5'), [Board.sq_to_position('a2'),
+                                                                 Board.sq_to_position('a3'),
+                                                                 Board.sq_to_position('a4')])
 
 
 if __name__ == '__main__':

@@ -55,7 +55,7 @@ class Piece:
     @property
     def get_moves(self):
         """ Returns list of possible (x,y) coordinates to move to """
-        return self._moveset
+        return remove_out_of_bounds(self._moveset)
 
     @property
     def owner(self):

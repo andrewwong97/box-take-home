@@ -177,6 +177,14 @@ class Board:
                 return letters[j] + str(pos[1]+1)
         raise PositionException('Invalid position: {}'.format(pos))
 
+    @staticmethod
+    def is_bishop_path(o, d):
+        return d[1] - o[1] == d[0] - o[0]
+
+    @staticmethod
+    def is_rook_path(o, d):
+        return d[1] - o[1] == 0 or d[0] - o[0] == 0
+
     def __repr__(self):
         """ Used for debugging """
         s = ''
