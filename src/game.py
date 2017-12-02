@@ -102,8 +102,27 @@ class Game:
     def is_valid_move(self, origin, dest):
         """ Helper function for valid move checks, no jumps """
         o_piece = self.board.piece_at_square(origin)
-        if Board.sq_to_position(dest) in o_piece.get_moves:
-            for pos in self.get_path_positions(origin, dest):
+
+        # if there is a piece of the same player behind o_piece, concat moveset of that piece to o_piece.get_moves
+        behind_pos = Board.sq_to_position(origin)  # (x,y)-tuple
+        if self.turn == 'lower':
+            behind_pos = (behind_pos[0], behind_pos[1]-1)
+        else:
+            behind_pos = (behind_pos[0], behind_pos[1]+1)
+
+        behind_piece = self.board.piece_at_square(Board.position_to_square(behind_pos))
+        shift = []
+        if behind_piece:
+            if self.turn == 'lower':
+                # get_moves is a list of valid (x, y) coordinates inside the board
+                shift = [(i[0], i[1] + 1) for i in behind_piece.get_moves]
+            else:
+                shift = [(i[0], i[1] - 1) for i in behind_piece.get_moves]
+
+        new_moveset = list(set(o_piece.get_moves + shift))  # list concat
+
+        if Board.sq_to_position(dest) in new_moveset:
+            for pos in self.get_path_positions(origin, dest, new_moveset):
                 if self.board.piece_at_square(Board.position_to_square(pos)):
                     # there is a piece between origin and destination
                     return False
@@ -112,7 +131,7 @@ class Game:
         # destination is not a valid move
         return False
 
-    def get_path_positions(self, origin, dest):
+    def get_path_positions(self, origin, dest, move_set):
         """
         Get intermediate positions between origin and destination
         :param origin: origin square (e.g. a1)
@@ -120,16 +139,16 @@ class Game:
         :return: list of position 2-tuples
         """
         result = []
-        o_piece = self.board.piece_at_square(origin)
+        # o_piece = self.board.piece_at_square(origin)
         o_pos = Board.sq_to_position(origin)
         d_pos = Board.sq_to_position(dest)
         if Board.is_bishop_path(o_pos, d_pos):
-            for pos in o_piece.get_moves:
+            for pos in move_set:
                 if pos != o_pos and pos != d_pos and Board.is_bishop_path(o_pos, pos):
                     if Board.in_between(pos, o_pos, d_pos):
                         result.append(pos)
         if Board.is_rook_path(o_pos, d_pos):
-            for pos in o_piece.get_moves:
+            for pos in move_set:
                 if pos != o_pos and pos != d_pos and Board.is_rook_path(o_pos, pos):
                     if Board.in_between(pos, o_pos, d_pos):
                         result.append(pos)

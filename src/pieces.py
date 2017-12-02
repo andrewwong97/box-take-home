@@ -191,7 +191,7 @@ def rook_moves(x, y):
 
 
 def pawn_moves(x, y):
-    return remove_out_of_bounds([(x, y+1)])
+    return remove_out_of_bounds([(x, y+1), (x, y-1)])
 
 
 def remove_out_of_bounds(moves_list):
